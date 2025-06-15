@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Voice Throw</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>🎤 Voice Throw</h1>
+    <p>Click to start throwing your voice to the speakers.</p>
+    <button id="startButton">Start</button>
+    <button id="stopButton" disabled>Stop</button>
+    <p id="status">Status: Idle</p>
+  </div>
+
+  <script>
+    let audioContext;
+    let micStream;
+    let sourceNode;
+
+    const startButton = document.getElementById('startButton');
+    const stopButton = document.getElementById('stopButton');
+    const statusText = document.getElementById('status');
+
+    startButton.addEventListener('click', async () => {
+      try {
+        audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+        sourceNode = audioContext.createMediaStreamSource(micStream);
+        sourceNode.connect(audioContext.destination); // sends audio to speakers
+
+        startButton.disabled = true;
+        stopButton.disabled = false;
+        statusText.textContent = "Status: Throwing voice (Live)";
+      } catch (err) {
+        console.error('Mic access error:', err);
+        statusText.textContent = "Status: Failed to access mic";
+      }
+    });
+
+    stopButton.addEventListener('click', () => {
+      if (sourceNode) {
+        sourceNode.disconnect();
+      }
+      if (micStream) {
+        micStream.getTracks().forEach(track => track.stop());
+      }
+      if (audioContext) {
+        audioContext.close();
+      }
+
+      startButton.disabled = false;
+      stopButton.disabled = true;
+      statusText.textContent = "Status: Stopped";
+    });
+  </script>
+</body>
+</html>
