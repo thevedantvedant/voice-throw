@@ -3,103 +3,15 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Voice Throw</title>
+  <title>Voice-Throw</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="container">
-    <h1>🎤 Voice Throw</h1>
-    <p>Live monitor your voice with better quality and less delay.</p>
-    <button id="startButton">Start</button>
-    <button id="stopButton" disabled>Stop</button>
-    <label for="gainControl">Gain:</label>
-    <input type="range" id="gainControl" min="0" max="2" value="1" step="0.01" />
-    <p id="status">Status: Idle</p>
+  <div id="app">
+    <h1>🎙️ Voice-Throw</h1>
+    <button id="startButton">Tap to Start</button>
+    <p id="status">Idle</p>
   </div>
-
-  <script>
-    let audioContext;
-    let micStream;
-    let sourceNode;
-    let gainNode;
-    let filterNode;
-    let compressorNode;
-
-    const startButton = document.getElementById('startButton');
-    const stopButton = document.getElementById('stopButton');
-    const gainControl = document.getElementById('gainControl');
-    const statusText = document.getElementById('status');
-
-    startButton.addEventListener('click', async () => {
-      try {
-        // Use lowest possible latency
-audioContext = new (window.AudioContext || window.webkitAudioContext)({
-  latencyHint: 0.001, // Manually override to absurdly low
-  sampleRate: 48000
-});
-
-        });
-
-        micStream = await navigator.mediaDevices.getUserMedia({
-          audio: {
-            echoCancellation: false,
-            noiseSuppression: false,
-            autoGainControl: false,
-            channelCount: 1,
-            sampleRate: 48000,
-            sampleSize: 16
-          }
-        });
-
-        // Set up audio nodes
-        sourceNode = audioContext.createMediaStreamSource(micStream);
-        gainNode = audioContext.createGain();
-        gainNode.gain.value = parseFloat(gainControl.value);
-
-        filterNode = audioContext.createBiquadFilter();
-        filterNode.type = 'highpass';
-        filterNode.frequency.value = 100; // Cuts low rumble & hum
-
-        compressorNode = audioContext.createDynamicsCompressor();
-        compressorNode.threshold.setValueAtTime(-50, audioContext.currentTime);
-        compressorNode.knee.setValueAtTime(20, audioContext.currentTime);
-        compressorNode.ratio.setValueAtTime(4, audioContext.currentTime);
-        compressorNode.attack.setValueAtTime(0.005, audioContext.currentTime);
-        compressorNode.release.setValueAtTime(0.1, audioContext.currentTime);
-
-        // Connect chain: MIC → Filter → Compressor → Gain → Speaker
-        sourceNode
-          .connect(filterNode)
-          .connect(compressorNode)
-          .connect(gainNode)
-          .connect(audioContext.destination);
-
-        // Update gain in real-time
-        gainControl.addEventListener('input', () => {
-          gainNode.gain.value = parseFloat(gainControl.value);
-        });
-
-        startButton.disabled = true;
-        stopButton.disabled = false;
-        statusText.textContent = "Status: Throwing voice (Enhanced)";
-      } catch (err) {
-        console.error('Mic access error:', err);
-        statusText.textContent = "Status: Failed to access mic";
-      }
-    });
-
-    stopButton.addEventListener('click', () => {
-      if (sourceNode) sourceNode.disconnect();
-      if (gainNode) gainNode.disconnect();
-      if (filterNode) filterNode.disconnect();
-      if (compressorNode) compressorNode.disconnect();
-      if (micStream) micStream.getTracks().forEach(track => track.stop());
-      if (audioContext) audioContext.close();
-
-      startButton.disabled = false;
-      stopButton.disabled = true;
-      statusText.textContent = "Status: Stopped";
-    });
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
