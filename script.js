@@ -88,3 +88,56 @@ stopButton.addEventListener('click', () => {
     statusText.textContent = "❌ Stop failed";
   }
 });
+/* ... keep existing consts ... */
+
+let usbMicId = null;
+
+// Detect devices on load
+async function detectUsbMic() {
+  try {
+    const devices = await navigator.mediaDevices.enumerateDevices();
+    devices
+      .filter(d => d.kind === 'audioinput')
+      .forEach(d => {
+        // Many USB mics have 'USB' or 'External' in label
+        if (/usb|external|type-c/i.test(d.label)) {
+          usbMicId = d.deviceId;
+        }
+      });
+  } catch (e) {
+    console.warn('Device enumeration fail:', e);
+  }
+}
+
+// Run detection at start
+detectUsbMic();
+
+startButton.addEventListener('click', async () => {
+  try {
+    startButton.disabled = true;
+    stopButton.disabled = false;
+    statusText.textContent = 'Starting...';
+
+    const micConstraints = {
+      echoCancellation: false,
+      noiseSuppression: false,
+      autoGainControl: false,
+      latency: 0,
+      channelCount: 1
+    };
+
+    if (usbMicId) {
+      micConstraints.deviceId = { exact: usbMicId };
+      console.log('Using USB mic ID:', usbMicId);
+    }
+
+    stream = await navigator.mediaDevices.getUserMedia({ audio: micConstraints });
+    /* ... rest of your setup: audioContext, analyser, meter ... */
+  } catch (err) {
+    console.error(err);
+    statusText.textContent = '❌ Error: ' + err.message;
+    startButton.disabled = false;
+    stopButton.disabled = true;
+  }
+});
+
