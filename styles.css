@@ -1,59 +1,84 @@
 body {
   margin: 0;
   padding: 0;
+  background: linear-gradient(135deg, #0f0f0f, #1f1f1f);
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to right, #0f2027, #203a43, #2c5364);
-  color: white;
+  color: #fff;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
+  overflow: hidden;
+  background-attachment: fixed;
 }
 
-#app {
-  text-align: center;
-  padding: 2rem;
+.glass {
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 20px;
-  background-color: rgba(0, 0, 0, 0.4);
-  box-shadow: 0 0 20px rgba(0, 255, 200, 0.4);
+  padding: 2rem 3rem;
+  text-align: center;
+  box-shadow: 0 8px 32px 0 rgba(0, 255, 255, 0.2);
+  max-width: 90%;
 }
 
 h1 {
   font-size: 3rem;
-  margin-bottom: 0.2rem;
+  margin: 0 0 0.5rem;
 }
 
 .tagline {
-  font-size: 1.1rem;
-  color: #ccc;
+  font-size: 1rem;
+  color: #ddd;
   margin-bottom: 2rem;
 }
 
-button {
-  padding: 1rem 2.5rem;
-  font-size: 1.2rem;
-  background: #00ffcc;
-  border: none;
-  border-radius: 10px;
-  color: #000;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background 0.3s ease;
+.buttons {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
 }
 
-button:hover {
-  background: #00ccaa;
+button {
+  padding: 0.8rem 2rem;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button.start {
+  background: #00ffcc;
+  color: #000;
+}
+
+button.stop {
+  background: #ff4d4d;
+  color: #fff;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:hover:not(:disabled) {
+  transform: scale(1.05);
+  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
 }
 
 #status {
-  margin-top: 1.5rem;
   font-size: 1rem;
-  color: #bbb;
+  color: #ccc;
 }
 
 footer {
-  margin-top: 3rem;
-  font-size: 1rem;
-  color: #eee;
-  opacity: 0.9;
+  margin-top: 2rem;
+  font-size: 0.9rem;
+  color: #aaa;
 }
