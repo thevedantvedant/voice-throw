@@ -9,7 +9,7 @@
 <body>
   <div class="container">
     <h1>🎤 Voice Throw</h1>
-    <p>Click to start throwing your voice to the speakers.</p>
+    <p>Click to start throwing your voice to the speakers with high quality.</p>
     <button id="startButton">Start</button>
     <button id="stopButton" disabled>Stop</button>
     <p id="status">Status: Idle</p>
@@ -26,31 +26,41 @@
 
     startButton.addEventListener('click', async () => {
       try {
-        audioContext = new (window.AudioContext || window.webkitAudioContext)();
-        micStream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        // Create audio context with preferred sample rate
+        audioContext = new (window.AudioContext || window.webkitAudioContext)({
+          latencyHint: 'interactive',
+          sampleRate: 48000 // Higher than default (44100), can be adjusted
+        });
 
+        // Request high-quality mic stream
+        micStream = await navigator.mediaDevices.getUserMedia({
+          audio: {
+            echoCancellation: false,
+            noiseSuppression: false,
+            autoGainControl: false,
+            channelCount: 1,
+            sampleRate: 48000,
+            sampleSize: 16
+          }
+        });
+
+        // Create source from mic and connect to speakers
         sourceNode = audioContext.createMediaStreamSource(micStream);
-        sourceNode.connect(audioContext.destination); // sends audio to speakers
+        sourceNode.connect(audioContext.destination);
 
         startButton.disabled = true;
         stopButton.disabled = false;
-        statusText.textContent = "Status: Throwing voice (Live)";
+        statusText.textContent = "Status: Throwing voice (High Quality)";
       } catch (err) {
         console.error('Mic access error:', err);
-        statusText.textContent = "Status: Failed to access mic";
+        statusText.textContent = "Status: Mic access failed";
       }
     });
 
     stopButton.addEventListener('click', () => {
-      if (sourceNode) {
-        sourceNode.disconnect();
-      }
-      if (micStream) {
-        micStream.getTracks().forEach(track => track.stop());
-      }
-      if (audioContext) {
-        audioContext.close();
-      }
+      if (sourceNode) sourceNode.disconnect();
+      if (micStream) micStream.getTracks().forEach(track => track.stop());
+      if (audioContext) audioContext.close();
 
       startButton.disabled = false;
       stopButton.disabled = true;
