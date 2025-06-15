@@ -33,9 +33,11 @@
     startButton.addEventListener('click', async () => {
       try {
         // Use lowest possible latency
-        audioContext = new (window.AudioContext || window.webkitAudioContext)({
-          latencyHint: 'interactive',
-          sampleRate: 48000
+audioContext = new (window.AudioContext || window.webkitAudioContext)({
+  latencyHint: 0.001, // Manually override to absurdly low
+  sampleRate: 48000
+});
+
         });
 
         micStream = await navigator.mediaDevices.getUserMedia({
