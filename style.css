@@ -8,8 +8,6 @@ body {
   justify-content: center;
   align-items: center;
   height: 100vh;
-  overflow: hidden;
-  background-attachment: fixed;
 }
 
 .glass {
@@ -20,19 +18,32 @@ body {
   border-radius: 20px;
   padding: 2rem 3rem;
   text-align: center;
-  box-shadow: 0 8px 32px 0 rgba(0, 255, 255, 0.2);
+  box-shadow: 0 8px 32px rgba(0, 255, 255, 0.2);
   max-width: 90%;
 }
 
 h1 {
   font-size: 3rem;
-  margin: 0 0 0.5rem;
+  margin-bottom: 0.2rem;
 }
 
 .tagline {
   font-size: 1rem;
   color: #ddd;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+}
+
+label {
+  font-size: 1rem;
+  color: #ccc;
+}
+
+select {
+  margin: 0.5rem 0 1.5rem;
+  padding: 0.5rem;
+  border-radius: 8px;
+  border: none;
+  font-size: 1rem;
 }
 
 .buttons {
@@ -67,11 +78,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-button:hover:not(:disabled) {
-  transform: scale(1.05);
-  box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-}
-
 #status {
   font-size: 1rem;
   color: #ccc;
@@ -81,4 +87,21 @@ footer {
   margin-top: 2rem;
   font-size: 0.9rem;
   color: #aaa;
+}
+
+#meterContainer {
+  background: #222;
+  border-radius: 10px;
+  height: 10px;
+  width: 100%;
+  max-width: 300px;
+  margin: 0 auto 1rem;
+  overflow: hidden;
+}
+
+#volumeBar {
+  height: 100%;
+  background: lime;
+  width: 0%;
+  transition: width 0.1s linear;
 }
