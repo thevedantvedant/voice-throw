@@ -7,11 +7,15 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div id="app">
+  <div id="app" class="glass">
     <h1>🎙️ Voice-Throw</h1>
     <p class="tagline">Ultra-low latency voice passthrough</p>
 
-    <button id="startButton">Tap to Start Mic</button>
+    <div class="buttons">
+      <button id="startButton" class="start">Start</button>
+      <button id="stopButton" class="stop" disabled>Stop</button>
+    </div>
+
     <p id="status">Idle</p>
 
     <footer>
